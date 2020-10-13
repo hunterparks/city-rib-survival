@@ -1,0 +1,34 @@
+{
+  "name": "city-rib-survival",
+  "version": "0.0.1",
+  "description": "Management application for the survival.rib.city SMP minecraft server.",
+  "main": "src",
+  "scripts": {
+    "lint": "eslint src/. test/. --config .eslintrc.json",
+    "start": "node src/",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hunterparks/city-rib-survival.git"
+  },
+  "keywords": [
+    "minecraft",
+    "nodejs"
+  ],
+  "author": {
+    "name": "Hunter Parks",
+    "email": "hunter@prks.cc"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hunterparks/city-rib-survival/issues"
+  },
+  "homepage": "https://github.com/hunterparks/city-rib-survival#readme",
+  "devDependencies": {
+    "eslint": "^7.11.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
