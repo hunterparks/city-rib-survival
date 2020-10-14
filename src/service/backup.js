@@ -10,7 +10,7 @@ const DEFAULT_BACKUP_TYPE = 'hourly';
 function backup() {
     const backupPath = path.join(process.env.ROOT_BACKUP_PATH, DEFAULT_BACKUP_TYPE);
     if (!fs.existsSync(backupPath)) {
-        logger.warning(`Backup folder created -> ${backupPath}`);
+        logger.warn(`Backup folder created -> ${backupPath}`);
         fs.mkdirSync(backupPath, { recursive: true });
         execute.linuxCommand(`chown -R ${process.env.USER_NAME}.${process.env.USER_NAME} ${process.env.ROOT_BACKUP_PATH}`);
     }
