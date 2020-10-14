@@ -4,6 +4,7 @@
   "description": "Management application for the survival.rib.city SMP minecraft server.",
   "main": "src",
   "scripts": {
+    "backup": "node src/ backup",
     "lint": "eslint src/. test/. --config .eslintrc.json",
     "start": "node src/",
     "test": "npm run lint"
@@ -29,6 +30,7 @@
     "eslint": "^7.11.0"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "pino": "^6.7.0"
   }
 }
