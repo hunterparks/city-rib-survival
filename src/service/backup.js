@@ -12,6 +12,7 @@ function backup() {
     if (!fs.existsSync(backupPath)) {
         logger.warning(`Backup folder created -> ${backupPath}`);
         fs.mkdirSync(backupPath, { recursive: true });
+        execute.linuxCommand(`chown -R ${process.env.USER_NAME}.${process.env.USER_NAME} ${process.env.ROOT_BACKUP_PATH}`);
     }
     message.players('Starting backup...');
     execute.mcCommand('save-off'); // Disable world auto-saving
