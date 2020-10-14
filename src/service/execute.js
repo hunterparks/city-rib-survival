@@ -1,7 +1,7 @@
 const childProcess = require('child_process');
 const logger = require('./logger.js').logger();
 
-function command(command) {
+function linuxCommand(command) {
     if (process.env.DEBUG) {
         logger.info(`Command -> ${command}`);
     }
@@ -19,11 +19,11 @@ function mcCommand(command) {
 }
 
 function userCommand(command, username) {
-    command(`sudo -u ${username} ${command}`);
+    linuxCommand(`sudo -u ${username} ${command}`);
 }
 
 module.exports = {
-    command,
+    linuxCommand,
     mcCommand,
     userCommand
 };

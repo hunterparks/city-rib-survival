@@ -5,7 +5,7 @@
   "main": "src",
   "scripts": {
     "backup": "node src/ backup",
-    "lint": "eslint src/. test/. --config .eslintrc.json",
+    "lint": "eslint src/. --config .eslintrc.json",
     "start": "node src/",
     "test": "npm run lint"
   },
