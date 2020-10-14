@@ -1,4 +1,3 @@
-const execute = require('./execute.js');
 const fs = require('fs');
 const helpers = require('./helpers.js');
 const path = require('path');
@@ -9,7 +8,6 @@ let _logger = '';
 function createLogger(logPath, applicationName) {
     if(!fs.existsSync(logPath)) {
         fs.mkdirSync(logPath, { recursive: true });
-        execute.linuxCommand(`chown -R ${process.env.USER_NAME}.${process.env.USER_NAME} ${logPath}`);
     }
     _logger = pino({
         redact: {
