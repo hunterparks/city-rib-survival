@@ -8,7 +8,16 @@ const util = require('minecraft-server-util');
 
 const DEFAULT_BACKUP_TYPE = 'hourly';
 
-function backup() {
+async function backup() {
+    try {
+        await util.status(process.env.MC_SERVER_URL);
+        await execute.mcCommand('save-off');
+
+    }
+    catch (ex) {
+        logger.error(ex);
+    }
+    return;
     util.status(process.env.MC_SERVER_URL)
         .then(async () => { // Server is online
             const backupPath = path.join(process.env.ROOT_BACKUP_PATH, DEFAULT_BACKUP_TYPE);
