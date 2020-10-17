@@ -13,8 +13,8 @@ const BACKUP_INTERVAL = {
     MONTHLY: 'monthly'
 };
 const BACKUP_RETENTION = {
-    HOURLY: 24,
-    DAILY: 7,
+    HOURLY: 6,
+    DAILY: 2,
     WEEKLY: 4,
     MONTHLY: 0
 };
