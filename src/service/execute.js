@@ -2,7 +2,7 @@ const childProcess = require('child_process');
 const logger = require('./logger.js').logger();
 const util = require('minecraft-server-util');
 
-const rcon = new util.RCON(process.env.MC_SERVER_URL, { password: process.env.MC_RCON_PASSWORD });
+const rcon = new util.RCON(process.env.MC_SERVER_URL, { port: 25575, password: process.env.MC_RCON_PASSWORD });
 
 function linuxCommand(command) {
     if (process.env.DEBUG) {
