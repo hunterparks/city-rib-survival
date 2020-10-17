@@ -8,7 +8,7 @@ const util = require('minecraft-server-util');
 
 const DEFAULT_BACKUP_TYPE = 'hourly';
 
-function backup() {
+async function backup() {
     util.status(process.env.MC_SERVER_URL)
         .then(() => { // Server is online
             const backupPath = path.join(process.env.ROOT_BACKUP_PATH, DEFAULT_BACKUP_TYPE);
@@ -17,13 +17,13 @@ function backup() {
                 logger.warn(`Backup folder created -> ${backupPath}`);
             }
             message.players('Starting backup...');
-            execute.mcCommand('save-off'); // Disable world auto-saving
+            await execute.mcCommand('save-off'); // Disable world auto-saving
             const start = new Date().getUTCMilliseconds() / 1000.0;
             const archivePath = `${path.join(backupPath, helpers.getTimestamp())}.tar.gz`;
             execute.linuxCommand(`tar -czf ${archivePath} -C ${process.env.MC_SERVER_ROOT} ${process.env.MC_WORLD_NAME}`);
             const end = new Date().getUTCMilliseconds() / 1000.0;
-            execute.mcCommand('save-on'); // Re-enable world auto-saving
-            execute.mcCommand('save-all');
+            await execute.mcCommand('save-on'); // Re-enable world auto-saving
+            await execute.mcCommand('save-all');
             // Backup Statistics
             const delta = end - start;
             const worldSizeBytes = (helpers.getTotalSize(path.join(process.env.MC_SERVER_ROOT, process.env.MC_WORLD_NAME)));
