@@ -26,6 +26,8 @@ async function backup() {
         await execute.mcCommand('save-on'); // Re-enable world auto-saving
         await execute.mcCommand('save-all');
         // Backup Statistics
+        console.log(end);
+        console.log(start);
         const delta = end - start;
         const worldSizeBytes = (helpers.getTotalSize(path.join(process.env.MC_SERVER_ROOT, process.env.MC_WORLD_NAME)));
         const archiveSizeBytes = (fs.statSync(archivePath).size);
