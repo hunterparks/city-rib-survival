@@ -4,7 +4,7 @@
   "description": "Management application for the survival.rib.city SMP minecraft server.",
   "main": "src",
   "scripts": {
-    "backup": "node src/ backup",
+    "dev": "nodemon src/",
     "lint": "eslint src/. --config .eslintrc.json",
     "start": "node src/",
     "test": "npm run lint"
@@ -27,10 +27,12 @@
   },
   "homepage": "https://github.com/hunterparks/city-rib-survival#readme",
   "devDependencies": {
-    "eslint": "^7.11.0"
+    "eslint": "^7.11.0",
+    "nodemon": "^2.0.5"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "minecraft-server-util": "^3.0.3",
     "pino": "^6.7.0"
   }
 }

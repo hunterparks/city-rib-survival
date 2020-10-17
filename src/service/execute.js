@@ -1,5 +1,8 @@
 const childProcess = require('child_process');
 const logger = require('./logger.js').logger();
+const util = require('minecraft-server-util');
+
+const rcon = new util.RCON(process.env.MC_SERVER_URL, { password: process.env.MC_RCON_PASSWORD });
 
 function linuxCommand(command) {
     if (process.env.DEBUG) {
@@ -15,7 +18,19 @@ function linuxCommand(command) {
 }
 
 function mcCommand(command) {
-    userCommand(`screen -p 0 -S ${process.env.MC_SCREEN} -X stuff "${command}^M"`, process.env.MC_USER);
+    if (process.env.USE_SCREEN) {
+        userCommand(`screen -p 0 -S ${process.env.MC_SCREEN} -X stuff "${command}^M"`, process.env.MC_USER);
+    } else {
+        rcon.connect()
+            .then(async () => {
+                await rcon.run(command);
+                rcon.close();
+            })
+            .catch((error) => {
+                logger.error(error);
+            });
+    }
+    
 }
 
 function userCommand(command, username) {
