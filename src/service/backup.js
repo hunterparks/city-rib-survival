@@ -8,9 +8,9 @@ const util = require('minecraft-server-util');
 
 const DEFAULT_BACKUP_TYPE = 'hourly';
 
-async function backup() {
+function backup() {
     util.status(process.env.MC_SERVER_URL)
-        .then(() => { // Server is online
+        .then(async () => { // Server is online
             const backupPath = path.join(process.env.ROOT_BACKUP_PATH, DEFAULT_BACKUP_TYPE);
             if (!fs.existsSync(backupPath)) {
                 fs.mkdirSync(backupPath, { recursive: true });

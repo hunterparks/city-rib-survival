@@ -33,7 +33,6 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "minecraft-server-util": "^3.0.3",
-    "pino": "^6.7.0",
-    "rcon-client": "^4.2.3"
+    "pino": "^6.7.0"
   }
 }
