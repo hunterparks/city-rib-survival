@@ -19,10 +19,10 @@ async function backup() {
         message.players('Starting backup...');
         await execute.mcCommand('save-off');
         await execute.mcCommand('save-off'); // Disable world auto-saving
-        const start = new Date().getUTCMilliseconds() / 1000.0;
+        const start = new Date().getUTCMilliseconds();
         const archivePath = `${path.join(backupPath, helpers.getTimestamp())}.tar.gz`;
         execute.linuxCommand(`tar -czf ${archivePath} -C ${process.env.MC_SERVER_ROOT} ${process.env.MC_WORLD_NAME}`);
-        const end = new Date().getUTCMilliseconds() / 1000.0;
+        const end = new Date().getUTCMilliseconds();
         await execute.mcCommand('save-on'); // Re-enable world auto-saving
         await execute.mcCommand('save-all');
         // Backup Statistics
@@ -33,7 +33,7 @@ async function backup() {
         const backupDirectorySize = helpers.getTotalSize(backupPath) / 1e6;
         const compressionAmount = (archiveSizeBytes * 100) / worldSizeBytes;
         if (process.env.DEBUG) {
-            logger.info(`Backup Duration -> ${delta.toFixed(2)} seconds`);
+            logger.info(`Backup Duration -> ${delta.toFixed(2)} milliseconds`);
             logger.info(`World Folder Size -> ${worldSizeBytes.toFixed(2)} bytes`);
             logger.info(`Archive Size -> ${archiveSizeBytes.toFixed(2)} bytes (${archiveSize.toFixed(2)} megabytes)`);
             logger.info(`Backup Folder Size -> ${backupDirectorySize.toFixed(2)} megabytes`);
@@ -42,7 +42,7 @@ async function backup() {
         if (archiveSize > 0) {
             message.playersSuccess(
                 'Backup complete!',
-                `Took ${delta.toFixed(2)} s, ${archiveSize.toFixed(2)}M/${backupDirectorySize.toFixed(2)}M, ${compressionAmount.toFixed(2)}%`);
+                `Took ${delta.toFixed(2)} ms, ${archiveSize.toFixed(2)}M/${backupDirectorySize.toFixed(2)}M, ${compressionAmount.toFixed(2)}%`);
         } else {
             message.playersError('Backup was not saved!', 'Please notify an administrator!');
         }
