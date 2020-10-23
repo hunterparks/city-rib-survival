@@ -75,7 +75,9 @@ async function backup() {
             fs.copyFileSync(archivePath, path.join(monthlyBackupPath, archiveName));
             helpers.pruneDirectory(monthlyBackupPath, BACKUP_RETENTION.MONTHLY);
         }
-        helpers.pruneDirectory(Logger.getLogPath(), 168); // Keep one week of hourly logs
+        // TODO: FIX THIS \/
+        //     Appears that the scandir fails because the current log file is open
+        // helpers.pruneDirectory(Logger.getLogPath(), 168); // Keep one week of hourly logs
     }
     catch (ex) {
         logger.error(ex);
