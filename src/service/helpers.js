@@ -36,7 +36,28 @@ function getTotalSize(dirPath) {
     return totalSize;
 }
 
+function pruneDirectory(dirPath, backupsToKeep) {
+    const files = fs.readdirSync(dirPath);
+    if (backupsToKeep === 0 || files.length <= backupsToKeep) return; // No pruning needed
+    const numberOfFilesToDelete = files.length - backupsToKeep;
+    console.log(numberOfFilesToDelete);
+    let filesAndSizes = {};
+    files.forEach((file) => {
+        const filePath = path.join(dirPath, file);
+        filesAndSizes[filePath] = fs.statSync(filePath).birthtimeMs;
+    });
+    let items = Object.keys(filesAndSizes)
+        .map((key) => [key, filesAndSizes[key]])
+        .sort((first, second) =>  first[1] - second[1]);
+    items.slice(0, numberOfFilesToDelete)
+        .forEach((file) => {
+            const fileToDelete = file[0];
+            fs.unlinkSync(fileToDelete);
+        });
+}
+
 module.exports = {
     getTimestamp,
-    getTotalSize
+    getTotalSize,
+    pruneDirectory
 };

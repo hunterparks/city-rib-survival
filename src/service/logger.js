@@ -4,6 +4,7 @@ const path = require('path');
 const pino = require('pino');
 
 let _logger = '';
+let _logPath = '';
 
 function createLogger(logPath, applicationName) {
     if(!fs.existsSync(logPath)) {
@@ -14,7 +15,16 @@ function createLogger(logPath, applicationName) {
             paths: [ 'hostname' ],
             remove: true
         }
-    }, path.join(logPath, `${applicationName}_${helpers.getTimestamp()}.log`));
+    }, getLogPath(logPath, applicationName));
+}
+
+function getLogPath(logPath = null, applicationName = null) {
+    if (_logPath === '' && (logPath === null || applicationName === null)) {
+        throw 'Unable to generate log path!';
+    } else if (_logPath === '') {
+        _logPath = path.join(logPath, `${applicationName}_${helpers.getTimestamp()}.log`);
+    }
+    return _logPath;
 }
 
 function logger() {
@@ -26,5 +36,6 @@ function logger() {
 
 module.exports = {
     createLogger,
+    getLogPath,
     logger
 };

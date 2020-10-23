@@ -1,7 +1,8 @@
 const execute = require('./execute.js');
 const helpers = require('./helpers.js');
 const fs = require('fs');
-const logger = require('./logger.js').logger();
+const Logger = require('./logger.js');
+const logger = Logger.logger();
 const message = require('./mcMessage.js');
 const path = require('path');
 const util = require('minecraft-server-util');
@@ -13,8 +14,8 @@ const BACKUP_INTERVAL = {
     MONTHLY: 'monthly'
 };
 const BACKUP_RETENTION = {
-    HOURLY: 6,
-    DAILY: 2,
+    HOURLY: 24,
+    DAILY: 7,
     WEEKLY: 4,
     MONTHLY: 0
 };
@@ -55,26 +56,26 @@ async function backup() {
         } else {
             message.playersError('Backup was not saved!', 'Please notify an administrator!');
         }
-        pruneDirectory(backupPath, BACKUP_RETENTION.HOURLY);
+        helpers.pruneDirectory(backupPath, BACKUP_RETENTION.HOURLY);
         if (isDaily()) {
             const dailyBackupPath = path.join(process.env.ROOT_BACKUP_PATH, BACKUP_INTERVAL.DAILY);
             createDirectory(dailyBackupPath);
             fs.copyFileSync(archivePath, path.join(dailyBackupPath, archiveName));
-            pruneDirectory(dailyBackupPath, BACKUP_RETENTION.DAILY);
+            helpers.pruneDirectory(dailyBackupPath, BACKUP_RETENTION.DAILY);
         }
         if (isWeekly()) {
             const weeklyBackupPath = path.join(process.env.ROOT_BACKUP_PATH, BACKUP_INTERVAL.WEEKLY);
             createDirectory(weeklyBackupPath);
             fs.copyFileSync(archivePath, path.join(weeklyBackupPath, archiveName));
-            pruneDirectory(weeklyBackupPath, BACKUP_RETENTION.WEEKLY);
+            helpers.pruneDirectory(weeklyBackupPath, BACKUP_RETENTION.WEEKLY);
         }
         if (isMonthly()) {
             const monthlyBackupPath = path.join(process.env.ROOT_BACKUP_PATH, BACKUP_INTERVAL.MONTHLY);
             createDirectory(monthlyBackupPath);
             fs.copyFileSync(archivePath, path.join(monthlyBackupPath, archiveName));
-            pruneDirectory(monthlyBackupPath, BACKUP_RETENTION.MONTHLY);
+            helpers.pruneDirectory(monthlyBackupPath, BACKUP_RETENTION.MONTHLY);
         }
-        // TODO: Prune logs?
+        helpers.pruneDirectory(Logger.getLogPath(), 168); // Keep one week of hourly logs
     }
     catch (ex) {
         logger.error(ex);
@@ -98,26 +99,6 @@ function isMonthly() {
 
 function isWeekly() {
     return isDaily() && new Date().getDay() === 0; // Midnight and Sunday
-}
-
-function pruneDirectory(dirPath, backupsToKeep) {
-    const files = fs.readdirSync(dirPath);
-    if (files.length <= backupsToKeep) return; // No pruning needed
-    const numberOfFilesToDelete = files.length - backupsToKeep;
-    console.log(numberOfFilesToDelete);
-    let filesAndSizes = {};
-    files.forEach((file) => {
-        const filePath = path.join(dirPath, file);
-        filesAndSizes[filePath] = fs.statSync(filePath).birthtimeMs;
-    });
-    let items = Object.keys(filesAndSizes)
-        .map((key) => [key, filesAndSizes[key]])
-        .sort((first, second) =>  first[1] - second[1]);
-    items.slice(0, numberOfFilesToDelete)
-        .forEach((file) => {
-            const fileToDelete = file[0];
-            fs.unlinkSync(fileToDelete);
-        });
 }
 
 module.exports = {
