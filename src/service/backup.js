@@ -34,7 +34,6 @@ async function backup() {
         execute.linuxCommand(`tar -czf ${archivePath} -C ${process.env.MC_SERVER_ROOT} ${process.env.MC_WORLD_NAME}`);
         const end = new Date().getTime();
         await execute.mcCommand('save-on'); // Re-enable world auto-saving
-        await execute.mcCommand('save-all');
         // Backup Statistics
         const delta = (end - start) / 1000;
         const worldSizeBytes = (helpers.getTotalSize(path.join(process.env.MC_SERVER_ROOT, process.env.MC_WORLD_NAME)));
@@ -42,6 +41,7 @@ async function backup() {
         const archiveSize = (archiveSizeBytes / 1e6);
         const backupDirectorySize = helpers.getTotalSize(backupPath) / 1e6;
         const compressionAmount = (archiveSizeBytes * 100) / worldSizeBytes;
+        await execute.mcCommand('save-all');
         if (process.env.DEBUG) {
             logger.info(`Backup Duration -> ${delta.toFixed(2)} seconds`);
             logger.info(`World Folder Size -> ${worldSizeBytes.toFixed(2)} bytes`);
