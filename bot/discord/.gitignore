@@ -1,0 +1,11 @@
+# Files
+.env
+src/config/config.ts
+
+# Folders
+dist/
+node_modules/
+
+# IDE
+.idea/
+.vscode/

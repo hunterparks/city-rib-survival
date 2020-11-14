@@ -2,6 +2,21 @@ require('dotenv').config();
 const logger = require('./service/logger.js');
 const path = require('path');
 
+const RUN_MODE = {
+    BOT: 'bot'
+};
+
+const mode = process.argv[2];
+
+if (mode === RUN_MODE.BOT) {
+    // TODO: Bot
+    require('./discord/index.js');
+    return 0;
+}
+
+console.log('goodbye');
+return 0;
+
 
 logger.createLogger(path.join(process.env.ROOT_LOG_PATH, 'backup'), 'minecraft-backup');
 const backupService = require('./service/backup.js');
