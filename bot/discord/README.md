@@ -24,4 +24,4 @@ Contributing guidelines will be available in the future, located in [CONTRIBUTIN
 
 ## License
 
-Rib City Survival is an open source project available under the [ISC](#) license.
+Rib City Survival is an open source project available under the [ISC](https://github.com/hunterparks/city-rib-survival/blob/master/bot/discord/LICENSE) license.
