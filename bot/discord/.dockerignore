@@ -4,6 +4,3 @@ Dockerfile
 .dockerignode
 .git
 .gitignore
-LICENSE
-README.md
-src
