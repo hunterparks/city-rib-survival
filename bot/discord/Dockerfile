@@ -10,6 +10,8 @@ USER node
 
 RUN npm install
 
+RUN npm run build
+
 COPY --chown=node:node . .
 
 CMD ["node", "dist/index.js"]
