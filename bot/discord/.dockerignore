@@ -1,6 +1,10 @@
 node_modules
 npm-debug.log
 Dockerfile
-.dockerignode
+.dockerignore
 .git
 .gitignore
+LICENSE
+README.md
+src
+tsconfig.json
