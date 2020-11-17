@@ -12,9 +12,14 @@ export class DiscordService {
         this.discord.on('message', (message: any) => this.parseMessage(message));
         this.discord.on('ready', () => this.ready());
         this.discord.login(Config.BOT_TOKEN).then(/* Do nothing - do not care! */);
-        process.on('SIGINT', () => {
-            this.sigint();
-        });
+    }
+
+    public destroy(): void {
+        this.onlineMessage.edit(`🔴 ${Config.BOT_NAME} version ${Config.VERSION} offline!`)
+            .then(() => {
+                this.discord.destroy();
+                process.exit(0);
+            });
     }
 
     private parseMessage(message: any): void {
@@ -29,14 +34,6 @@ export class DiscordService {
             .then((channel: any) => {
                 channel.send(`🟢 ${Config.BOT_NAME} version ${Config.VERSION} online!`)
                 .then((message: any) => this.onlineMessage = message);
-            });
-    }
-
-    private sigint(): void {
-        this.onlineMessage.edit(`🔴 ${Config.BOT_NAME} version ${Config.VERSION} offline!`)
-            .then(() => {
-                this.discord.destroy();
-                process.exit();
             });
     }
 }

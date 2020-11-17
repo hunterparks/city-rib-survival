@@ -8,6 +8,8 @@ class RibCityBot {
     constructor() {
         this.commandService = new CommandService();
         this.discordService = new DiscordService(this.commandService);
+        process.on('SIGINT', () => this.discordService.destroy());
+        process.on('SIGTERM', () => this.discordService.destroy());
     }
 }
 
