@@ -1,5 +1,5 @@
 # Files
-.env
+.env*
 src/config/config.ts
 
 # Folders

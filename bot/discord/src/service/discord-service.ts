@@ -15,6 +15,7 @@ export class DiscordService {
     }
 
     public destroy(): void {
+        if (Config.BOT_ENV === 'DEV') process.exit(0);
         this.onlineMessage.edit(`🔴 ${Config.BOT_NAME} version ${Config.VERSION} offline!`)
             .then(() => {
                 this.discord.destroy();
@@ -30,6 +31,7 @@ export class DiscordService {
     }
 
     private ready(): void {
+        if (Config.BOT_ENV === 'DEV') return;
         this.discord.channels.fetch(Config.CHANNEL.RibCityBot)
             .then((channel: any) => {
                 channel.send(`🟢 ${Config.BOT_NAME} version ${Config.VERSION} online!`)
