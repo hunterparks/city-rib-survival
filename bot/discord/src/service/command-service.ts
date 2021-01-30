@@ -1,5 +1,6 @@
 import { Command } from "../model/command";
 import { Config } from "../config/config";
+import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -11,9 +12,9 @@ export class CommandService {
         this.generateCommands();
     }
 
-    public processCommand(message: any): void {
+    public processCommand(message: Discord.Message): void {
         const args = message.content.slice(Config.COMMAND_PREFIX.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
+        const command = args.shift()?.toLowerCase() || '';
 
         const selectedCommand = this.commands.get(command);
         if (!selectedCommand) {
@@ -27,14 +28,14 @@ export class CommandService {
         }
     }
 
-    public validateChannel(authorizedChannels: string[], message: any): boolean {
+    public validateChannel(authorizedChannels: string[], message: Discord.Message): boolean {
         if (authorizedChannels.length === 0) return true;
         if (authorizedChannels.includes(message.channel.id)) return true;
         message.react('🚫');
         return false;
     }
 
-    public validateUser(authorizedUsers: string[], message: any): boolean {
+    public validateUser(authorizedUsers: string[], message: Discord.Message): boolean {
         if (authorizedUsers.length === 0) return true;
         if (authorizedUsers.includes(message.author.id)) return true;
         message.react('🚯');

@@ -2,7 +2,7 @@ import * as Canvas from 'canvas';
 import { Command } from '../model/command';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Utility } from '../service/utility-service';
+import { UtilityService } from '../service/utility-service';
 
 const AVATAR_IMAGE = '../asset/image/avatar.png';
 const AVATAR_SIZE = 128;
@@ -50,7 +50,7 @@ export class Bonk extends Command {
     }
     private createAndSendImage(canvas: Canvas.Canvas, message: any) {
         const buffer = canvas.toBuffer('image/jpeg');
-        const tempFilename = path.join(__dirname, '../asset', `temp-${Utility.generateUid()}.jpg`);
+        const tempFilename = path.join(__dirname, '../asset', `temp-${UtilityService.generateUid()}.jpg`);
         fs.writeFileSync(tempFilename, buffer);
         message.channel.send('Bonk!', {
             files: [{

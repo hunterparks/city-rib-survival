@@ -1,17 +1,24 @@
-import { CommandService } from "./command-service";
-import { Config } from "../config/config";
-
-const Discord = require('discord.js');
+import { CommandService } from './command-service';
+import { Config } from '../config/config';
+import * as Discord from 'discord.js';
+import { UtilityService } from './utility-service';
 
 export class DiscordService {
-    private readonly discord: any;
-    private onlineMessage: any;
+    private readonly discord: Discord.Client;
+    private onlineMessage!: Discord.Message;
 
     constructor(private commandService: CommandService) {
         this.discord = new Discord.Client();
-        this.discord.on('message', (message: any) => this.parseMessage(message));
+        this.discord.on('message', (message: Discord.Message) => this.parseMessage(message));
         this.discord.on('ready', () => this.ready());
-        this.discord.login(Config.BOT_TOKEN).then(/* Do nothing - do not care! */);
+        this.discord.login(Config.BOT_TOKEN)
+            .then(() => {
+                this.discord.channels.fetch(Config.CHANNEL.ServerStatus)
+                    .then((channel: Discord.Channel) => {
+                        UtilityService.updateStatus(channel as Discord.TextChannel);
+                        this.discord.setInterval(UtilityService.updateStatus, 5.5 * 60 * 1000, channel);
+                    });
+            });
     }
 
     public destroy(): void {
@@ -23,7 +30,7 @@ export class DiscordService {
             });
     }
 
-    private parseMessage(message: any): void {
+    private parseMessage(message: Discord.Message): void {
         if (message.author.bot) return;
         if (message.author.username === Config.BOT_NAME) return;
         if (!message.content.startsWith(Config.COMMAND_PREFIX)) return;
@@ -33,9 +40,9 @@ export class DiscordService {
     private ready(): void {
         if (Config.BOT_ENV === 'DEV') return;
         this.discord.channels.fetch(Config.CHANNEL.RibCityBot)
-            .then((channel: any) => {
-                channel.send(`🟢 ${Config.BOT_NAME} version ${Config.VERSION} online!`)
-                .then((message: any) => this.onlineMessage = message);
+            .then((channel: Discord.Channel) => {
+                (channel as Discord.TextChannel).send(`🟢 ${Config.BOT_NAME} version ${Config.VERSION} online!`)
+                .then((message: Discord.Message) => this.onlineMessage = message);
             });
     }
 }

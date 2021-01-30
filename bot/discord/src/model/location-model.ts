@@ -1,6 +1,5 @@
 import { Coordinate } from './coordinate';
 import shortid from 'shortid';
-import { Location } from '../command/location';
 
 export enum Dimension {
     end = 'end',

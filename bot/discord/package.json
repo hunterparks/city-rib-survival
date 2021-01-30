@@ -1,10 +1,10 @@
 {
   "name": "city-rib-survival-bot-discord",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Discord bot for Minecraft communities.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run clean && npx tsc && cp -r ./src/asset ./dist/asset && cp -r ./src/data ./dist/data",
+    "build": "npm run clean && npx tsc && cp -r ./src/asset ./dist/asset",
     "clean": "rm -rf dist",
     "start": "npm run build && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

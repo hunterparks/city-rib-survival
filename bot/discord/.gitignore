@@ -1,8 +1,8 @@
 # Files
 .env*
-src/config/config.ts
 
 # Folders
+data/
 dist/
 node_modules/
 
