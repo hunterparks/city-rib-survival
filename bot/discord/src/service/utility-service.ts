@@ -61,9 +61,13 @@ export class UtilityService {
                     embed.color = '#c53030';
                     embed.description = 'Offline! 😭';
                 }
-                channel.bulkDelete(100, true);
-                channel.send({ embed });
-                channel.stopTyping();
+                channel.bulkDelete(100, true)
+                    .then(() => {
+                        channel.send({ embed })
+                            .then(() => {
+                                channel.stopTyping();
+                            });
+                    });
             });
         });
     }
