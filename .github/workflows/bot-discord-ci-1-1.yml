@@ -1,4 +1,4 @@
-name: Bot Discord CI v1.1
+name: Bot Discord CI
 
 on:
   workflow_dispatch:
