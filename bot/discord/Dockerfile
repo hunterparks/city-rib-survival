@@ -8,6 +8,10 @@ COPY package*.json ./
 
 USER node
 
+ARG ARG_VERSION=0.0.0
+
+ENV VERSION=$ARG_VERSION
+
 RUN npm install
 
 COPY --chown=node:node . .
