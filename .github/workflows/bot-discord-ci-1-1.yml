@@ -5,7 +5,7 @@ on:
   push:
     paths:
     - 'bot/discord/**'
-    - '.github/workflows/bot-discord-ci.yml'
+    - '.github/workflows/bot-discord-ci-1-1.yml'
 
 jobs:
   bot-discord:
@@ -49,7 +49,7 @@ jobs:
         labels: |
           org.opencontainers.image.authors=${{ env.GITHUB_ACTOR }}
           org.opencontainers.image.created=${{ env.BUILD_DATE }}
-          org.opencontainers.image.description=Created with commit ${{ env.GIT_SHA }} and ref ${{ env.GIT_REF }}
+          org.opencontainers.image.description=Created from commit ${{ env.GIT_SHA }} and ref ${{ env.GIT_REF }}
           org.opencontainers.image.ref.name=${{ env.GIT_REF }}
           org.opencontainers.image.revision=${{ env.GITHUB_SHA }}
           org.opencontainers.image.source=https://github.com/${{ env.GITHUB_REPOSITORY }}
