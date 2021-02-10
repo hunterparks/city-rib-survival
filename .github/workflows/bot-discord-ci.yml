@@ -1,4 +1,4 @@
-name: Bot Discord CI
+name: Bot Discord CI v1.1
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
     
     - name: Set Environment Variables
       run: |
-        echo "BUILD_VER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        echo "BUILD_VER=1.1.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
         echo "IMAGE=ghcr.io/$GITHUB_REPOSITORY" >> $GITHUB_ENV
         echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
