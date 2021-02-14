@@ -1,5 +1,6 @@
 import { Command } from "../model/command";
 import { Config } from "../config/config";
+import { ConsoleLoggingService as log } from "../service/console-logging-service";
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -43,6 +44,7 @@ export class CommandService {
     }
 
     private generateCommands() {
+        log.info('Generating commands for use');
         const commandPath = path.join(__dirname, Config.COMMAND_LOCATION);
         const commandFiles = fs.readdirSync(commandPath)
             .filter(file => file.endsWith('.js'));
@@ -53,6 +55,7 @@ export class CommandService {
             .then((rawCommand) => {
                 const command: Command = new rawCommand[fileCommand];
                 this.commands.set(command.name, command);
+                log.info(`  Added command '${command.name}'`);
             });
         }
     }

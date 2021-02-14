@@ -1,3 +1,4 @@
+import { BotInfoDbService } from './bot-info-db-service';
 import { CommandService } from './command-service';
 import { Config } from '../config/config';
 import * as Discord from 'discord.js';
@@ -7,7 +8,7 @@ export class DiscordService {
     private readonly discord: Discord.Client;
     private onlineMessage!: Discord.Message;
 
-    constructor(private commandService: CommandService) {
+    constructor(private botInfoDbService: BotInfoDbService, private commandService: CommandService) {
         this.discord = new Discord.Client();
         this.discord.on('message', (message: Discord.Message) => this.parseMessage(message));
         this.discord.on('ready', () => this.ready());
@@ -38,6 +39,10 @@ export class DiscordService {
     }
 
     private ready(): void {
+        this.discord.channels.fetch(Config.CHANNEL.General)
+            .then((channel: Discord.Channel) => {
+                this.botInfoDbService.postReleaseNotes(channel as Discord.TextChannel);
+            });
         if (Config.BOT_ENV === 'DEV') return;
         this.discord.channels.fetch(Config.CHANNEL.RibCityBot)
             .then((channel: Discord.Channel) => {
