@@ -3,35 +3,31 @@ import { ConsoleLoggingService as log } from './console-logging-service';
 import { DatabaseService } from './database-service';
 import * as Discord from 'discord.js';
 import { JsonDB } from 'node-json-db';
+import { UtilityService } from './utility-service';
 
 const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES: Map<string, Discord.MessageEmbed> = new Map([
     [
-        '1.1.4', new Discord.MessageEmbed({
-            color: 0x0080FF,
-            description: '',
-            fields: [
-                {
-                    name: 'New Features ✨',
-                    value: [
-                        'Display release note information',
-                        'Added more logging (still not enough 🙃)',
-                        'Created new utility functions'
-                    ].map(value => `• ${value}`).join('\n')
-                },
-                {
-                    name: 'Bug Fixes 🐛',
-                    value: [
-                        'Catch exceptions when getting MC server status'
-                    ].map(value => `• ${value}`).join('\n')
-                },
-                {
-                    name: '\u200B',
-                    value: 'See full commit history [on github](https://github.com/hunterparks/city-rib-survival/commits/master)'
-                }
+        '1.1.5', UtilityService.generateReleaseNotesMessageEmbed(
+            '1.1.5',
+            [
+                'Added icon to status, if available 🖼'
             ],
-            title: '🚀  1.1.4 Release Notes  🚀'
-        })
+            [ ]
+        )
+    ],
+    [
+        '1.1.4', UtilityService.generateReleaseNotesMessageEmbed(
+            '1.1.4',
+            [
+                'Display release note information',
+                'Added more logging (still not enough 🙃)',
+                'Created new utility functions'
+            ],
+            [
+                'Catch exceptions when getting MC server status'
+            ]
+        )
     ]
 ]);
 
@@ -52,7 +48,7 @@ export class BotInfoDbService {
             .get(Config.VERSION) as Discord.MessageEmbed;
         if (!releaseNotes) return;
         log.info(`Publishing ${Config.VERSION} release notes`);
-        channel.send(releaseNotes).then(() => {
+        channel.send({ embed: releaseNotes }).then(() => {
             this._db.push('/version', Config.VERSION, true);
         });
     }

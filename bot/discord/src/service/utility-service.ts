@@ -3,11 +3,40 @@ import { ConsoleLoggingService as log } from './console-logging-service';
 import * as Discord from 'discord.js';
 import * as https from 'https';
 import { IncomingMessage } from 'http';
+import * as path from 'path';
+import { features } from 'process';
 
 const MAX_WIDTH = 3;
 const SERVICE_URL = 'https://api.mcsrvstat.us/2/';
 
 export class UtilityService {
+    public static generateReleaseNotesMessageEmbed(
+        version: string,
+        features: string[],
+        fixes: string[]
+    ): Discord.MessageEmbed {
+        const embed = new Discord.MessageEmbed({
+            color: 0x0080FF,
+            title: `🚀  ${version} Release Notes  🚀`
+        });
+        if (features.length) {
+            embed.addField(
+                'New Features ✨',
+                features.map(value => `• ${value}`).join('\n')
+            );
+        }
+        if (fixes.length) {
+            embed.addField(
+                'Bug Fixes 🐛',
+                fixes.map(value => `• ${value}`).join('\n')
+            );
+        }
+        embed.addField(
+            '\u200B',
+            'See full commit history [on github](https://github.com/hunterparks/city-rib-survival/commits/master)'
+        );
+        return embed;
+    }
     public static generateUid(): string {
         let firstPart = ((Math.random() * 46656) | 0).toString(36);
         let secondPart = ((Math.random() * 46656) | 0).toString(36);
@@ -43,8 +72,14 @@ export class UtilityService {
     }
     public static updateStatus(channel: Discord.TextChannel): void {
         if (!channel) return;
+        const cachedIcons = new Map([
+            [
+                'skybees.rib.city',
+                path.join(__dirname, '../asset/image/skybees.rib.city.png')
+            ]
+        ]);
         https.get(
-            `${SERVICE_URL}${Config.MC_SERVER_URL}`, 
+            `${SERVICE_URL}${Config.MC_SERVER_URL}`,
             (response: IncomingMessage) => {
                 let data = '';
                 response.on('data', (chunk: any) => data += chunk);
@@ -56,29 +91,23 @@ export class UtilityService {
                         log.error(`Status update failed ->\n${error}`);
                         return;
                     }
-                    const embed = {
-                        color: '',
-                        title: 'Status',
-                        description: '',
-                        fields: [] as any[]
-                    };
+                    const embed = new Discord.MessageEmbed({
+                        title: 'Status'
+                    });
                     if (res.online) {
-                        embed.color = '#2f855a';
-                        embed.description = 'Online! 🥳';
-                        embed.fields.push({
-                            name: res.hostname,
-                            value: res.motd.clean[0]
-                        });
-                        embed.fields.push({
-                            name: 'Minecraft Version',
-                            value: `${res.software} ${res.version}`
-                        });
+                        embed.setColor('#2f855a');
+                        embed.setDescription('Online! 🥳');
+                        embed.addField(res.hostname, res.motd.clean[0]);
+                        embed.addField(
+                            'Minecraft Version',
+                            `${res.software || 'Forge'} ${res.version}`
+                        );
                         const maxPlayers = res.players.max;
                         const onlinePlayers = res.players.online;
-                        embed.fields.push({
-                            name: 'Online Users',
-                            value: `${onlinePlayers} of ${maxPlayers} online!`
-                        });
+                        embed.addField(
+                            'Online Users',
+                            `${onlinePlayers} of ${maxPlayers} online!`
+                        );
                         if (res.players.online > 0) {
                             const listSize = res.players.list.length;
                             if (listSize > MAX_WIDTH) {
@@ -88,16 +117,20 @@ export class UtilityService {
                                     .push(`And ${morePlayers} more`);
                             }
                             for (const player of res.players.list) {
-                                embed.fields.push({
-                                    name: player,
-                                    value: 'online!',
-                                    inline: true
-                                });
+                                embed.addField(player, 'online!', true);
                             }
                         }
+                        if (res.icon && cachedIcons.get(res.hostname)) {
+                            const attachment = new Discord.MessageAttachment(
+                                cachedIcons.get(res.hostname) as string,
+                                'server-icon.png'
+                            );
+                            embed.attachFiles([ attachment ]);
+                            embed.setImage('attachment://server-icon.png');
+                        }
                     } else {
-                        embed.color = '#c53030';
-                        embed.description = 'Offline! 😭';
+                        embed.setColor('#c53030');
+                        embed.setDescription('Offline! 😭');
                     }
                     channel.bulkDelete(100, true)
                         .then(() => channel.send({ embed }));
