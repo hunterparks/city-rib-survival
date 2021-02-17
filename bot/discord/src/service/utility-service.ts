@@ -1,13 +1,4 @@
-import { Config } from '../config/config';
-import { ConsoleLoggingService as log } from './console-logging-service';
 import * as Discord from 'discord.js';
-import * as https from 'https';
-import { IncomingMessage } from 'http';
-import * as path from 'path';
-import { features } from 'process';
-
-const MAX_WIDTH = 3;
-const SERVICE_URL = 'https://api.mcsrvstat.us/2/';
 
 export class UtilityService {
     public static generateReleaseNotesMessageEmbed(
@@ -69,73 +60,6 @@ export class UtilityService {
     public static spacePadLeft(value: string, width: number): string {
         const missingWidth = width - value.length;
         return `${new Array(missingWidth).fill(' ').join('')}${value}`;
-    }
-    public static updateStatus(channel: Discord.TextChannel): void {
-        if (!channel) return;
-        const cachedIcons = new Map([
-            [
-                'skybees.rib.city',
-                path.join(__dirname, '../asset/image/skybees.rib.city.png')
-            ]
-        ]);
-        https.get(
-            `${SERVICE_URL}${Config.MC_SERVER_URL}`,
-            (response: IncomingMessage) => {
-                let data = '';
-                response.on('data', (chunk: any) => data += chunk);
-                response.on('end', () => {
-                    let res;
-                    try {
-                        res = JSON.parse(data);
-                    } catch(error) {
-                        log.error(`Status update failed ->\n${error}`);
-                        return;
-                    }
-                    const embed = new Discord.MessageEmbed({
-                        title: 'Status'
-                    });
-                    if (res.online) {
-                        embed.setColor('#2f855a');
-                        embed.setDescription('Online! 🥳');
-                        embed.addField(res.hostname, res.motd.clean[0]);
-                        embed.addField(
-                            'Minecraft Version',
-                            `${res.software || 'Forge'} ${res.version}`
-                        );
-                        const maxPlayers = res.players.max;
-                        const onlinePlayers = res.players.online;
-                        embed.addField(
-                            'Online Users',
-                            `${onlinePlayers} of ${maxPlayers} online!`
-                        );
-                        if (res.players.online > 0) {
-                            const listSize = res.players.list.length;
-                            if (listSize > MAX_WIDTH) {
-                                res.players.list = res.players.list.slice(0, 2);
-                                const morePlayers = listSize - MAX_WIDTH + 1;
-                                res.players.list
-                                    .push(`And ${morePlayers} more`);
-                            }
-                            for (const player of res.players.list) {
-                                embed.addField(player, 'online!', true);
-                            }
-                        }
-                        if (res.icon && cachedIcons.get(res.hostname)) {
-                            const attachment = new Discord.MessageAttachment(
-                                cachedIcons.get(res.hostname) as string,
-                                'server-icon.png'
-                            );
-                            embed.attachFiles([ attachment ]);
-                            embed.setImage('attachment://server-icon.png');
-                        }
-                    } else {
-                        embed.setColor('#c53030');
-                        embed.setDescription('Offline! 😭');
-                    }
-                    channel.bulkDelete(100, true)
-                        .then(() => channel.send({ embed }));
-            });
-        });
     }
     public static zeroPadLeft(value: number, width: number): string {
         const valueString = value.toString();

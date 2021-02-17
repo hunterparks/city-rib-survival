@@ -15,6 +15,5 @@ export class Config {
     public static readonly COMMAND_LOCATION = process.env.COMMAND_LOCATION as string;
     public static readonly COMMAND_PREFIX = process.env.COMMAND_PREFIX as string;
     public static readonly LOG_LEVEL = process.env.LOG_LEVEL as string || 'INFO';
-    public static readonly MC_SERVER_URL = process.env.MC_SERVER_URL;
     public static readonly VERSION  = process.env.VERSION as string;
 }

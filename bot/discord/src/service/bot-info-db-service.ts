@@ -8,6 +8,20 @@ import { UtilityService } from './utility-service';
 const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES: Map<string, Discord.MessageEmbed> = new Map([
     [
+        '1.1.6', UtilityService.generateReleaseNotesMessageEmbed(
+            '1.1.5',
+            [
+                'Update `!status` command',
+                'Create `StatusService`',
+                'Remove `MC_SERVER_URL` from config',
+                'Support multiline console logging'
+            ],
+            [
+                'Catch more exceptions!'
+            ]
+        )
+    ],
+    [
         '1.1.5', UtilityService.generateReleaseNotesMessageEmbed(
             '1.1.5',
             [
@@ -32,14 +46,32 @@ const RELEASE_NOTES: Map<string, Discord.MessageEmbed> = new Map([
 ]);
 
 export class BotInfoDbService {
-    private _db: JsonDB;
+    private static _db: JsonDB;
     constructor() {
-        this._db = new DatabaseService(DATABASE_NAME).getDb();
+        BotInfoDbService._db = new DatabaseService(DATABASE_NAME).getDb();
     }
-    public postReleaseNotes(channel: Discord.TextChannel): void {
+    public static addCommandStatusServers(server: string): boolean {
+        const currentServers = BotInfoDbService.getCommandStatusServers();
+        if (currentServers.includes(server)) return true;
+        const before = BotInfoDbService._db.count('/command/status/servers');
+        BotInfoDbService._db.push(`/command/status/servers[]`, { url: server });
+        const after = BotInfoDbService._db.count('/command/status/servers');
+        return after === before + 1;
+    }
+    public static getCommandStatusServers(): string[] {
+        try {
+            const servers = BotInfoDbService._db
+                .getData('/command/status/servers');
+            return (servers as any[]).map(server => server.url as string);
+        } catch(error) {
+            log.error('Error reading status servers', [ error ]);
+        }
+        return [];
+    }
+    public static postReleaseNotes(channel: Discord.TextChannel): void {
         let storedVersion;
         try {
-            storedVersion = this._db.getData('/version');
+            storedVersion = BotInfoDbService._db.getData('/version');
         } catch (error) {
             storedVersion = '0.0.0';
         }
@@ -51,5 +83,17 @@ export class BotInfoDbService {
         channel.send({ embed: releaseNotes }).then(() => {
             this._db.push('/version', Config.VERSION, true);
         });
+    }
+    public static removeCommandStatusServers(server: string): boolean {
+        const before = BotInfoDbService._db.count('/command/status/servers');
+        const index = BotInfoDbService._db.getIndex(
+            '/command/status/servers',
+            server,
+            'url'
+        );
+        if (index < 0) return false;
+        BotInfoDbService._db.delete(`/command/status/servers[${index}]`);
+        const after = BotInfoDbService._db.count('/command/status/servers');
+        return after + 1 === before;
     }
 }

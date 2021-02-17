@@ -1,14 +1,15 @@
 import { BotInfoDbService } from './bot-info-db-service';
 import { CommandService } from './command-service';
 import { Config } from '../config/config';
+import { ConsoleLoggingService as log } from './console-logging-service';
 import * as Discord from 'discord.js';
-import { UtilityService } from './utility-service';
+import { StatusService } from './status-service';
 
 export class DiscordService {
     private readonly discord: Discord.Client;
     private onlineMessage!: Discord.Message;
 
-    constructor(private botInfoDbService: BotInfoDbService, private commandService: CommandService) {
+    constructor(private commandService: CommandService) {
         this.discord = new Discord.Client();
         this.discord.on('message', (message: Discord.Message) => this.parseMessage(message));
         this.discord.on('ready', () => this.ready());
@@ -16,9 +17,12 @@ export class DiscordService {
             .then(() => {
                 this.discord.channels.fetch(Config.CHANNEL.ServerStatus)
                     .then((channel: Discord.Channel) => {
-                        UtilityService.updateStatus(channel as Discord.TextChannel);
-                        this.discord.setInterval(UtilityService.updateStatus, 5.5 * 60 * 1000, channel);
+                        StatusService.updateStatus(channel as Discord.TextChannel);
+                        this.discord.setInterval(StatusService.updateStatus, 5.5 * 60 * 1000, channel);
                     });
+            })
+            .catch(error => {
+                log.error(`Error logging into discord\n${error}`);
             });
     }
 
@@ -41,7 +45,7 @@ export class DiscordService {
     private ready(): void {
         this.discord.channels.fetch(Config.CHANNEL.General)
             .then((channel: Discord.Channel) => {
-                this.botInfoDbService.postReleaseNotes(channel as Discord.TextChannel);
+                BotInfoDbService.postReleaseNotes(channel as Discord.TextChannel);
             });
         if (Config.BOT_ENV === 'DEV') return;
         this.discord.channels.fetch(Config.CHANNEL.RibCityBot)
