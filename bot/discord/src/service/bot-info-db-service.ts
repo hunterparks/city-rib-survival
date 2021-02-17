@@ -8,7 +8,7 @@ import { UtilityService } from './utility-service';
 const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES_OBJECTS = [
     UtilityService.generateReleaseNotesMessageEmbed(
-        '1.1.7',
+        '1.1.9',
         [ 'Simplified release note processing 📝' ],
         [ ]
     ),
