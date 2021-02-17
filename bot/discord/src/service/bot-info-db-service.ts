@@ -6,44 +6,41 @@ import { JsonDB } from 'node-json-db';
 import { UtilityService } from './utility-service';
 
 const DATABASE_NAME = 'bot-info';
-const RELEASE_NOTES: Map<string, Discord.MessageEmbed> = new Map([
-    [
-        '1.1.6', UtilityService.generateReleaseNotesMessageEmbed(
-            '1.1.6',
-            [
-                'Update `!status` command',
-                'Create `StatusService`',
-                'Remove `MC_SERVER_URL` from config',
-                'Support multiline console logging'
-            ],
-            [
-                'Catch more exceptions!'
-            ]
-        )
-    ],
-    [
-        '1.1.5', UtilityService.generateReleaseNotesMessageEmbed(
-            '1.1.5',
-            [
-                'Added icon to status, if available 🖼'
-            ],
-            [ ]
-        )
-    ],
-    [
-        '1.1.4', UtilityService.generateReleaseNotesMessageEmbed(
-            '1.1.4',
-            [
-                'Display release note information',
-                'Added more logging (still not enough 🙃)',
-                'Created new utility functions'
-            ],
-            [
-                'Catch exceptions when getting MC server status'
-            ]
-        )
-    ]
-]);
+const RELEASE_NOTES_OBJECTS = [
+    UtilityService.generateReleaseNotesMessageEmbed(
+        '1.1.7',
+        [ 'Simplified release note processing 📝' ],
+        [ ]
+    ),
+    UtilityService.generateReleaseNotesMessageEmbed(
+        '1.1.6',
+        [
+            'Update `!status` command',
+            'Create `StatusService`',
+            'Remove `MC_SERVER_URL` from config',
+            'Support multiline console logging'
+        ],
+        [ 'Catch more exceptions!' ]
+    ),
+    UtilityService.generateReleaseNotesMessageEmbed(
+        '1.1.5',
+        [ 'Added icon to status, if available 🖼' ],
+        [ ]
+    ),
+    UtilityService.generateReleaseNotesMessageEmbed(
+        '1.1.4',
+        [
+            'Display release note information',
+            'Added more logging (still not enough 🙃)',
+            'Created new utility functions'
+        ],
+        [ 'Catch exceptions when getting MC server status' ]
+    )
+];
+const RELEASE_NOTES = new Map(RELEASE_NOTES_OBJECTS.map(note => [
+    note.title?.replace('🚀  ', '').replace(' Release Notes  🚀', '') as string,
+    note
+]));
 
 export class BotInfoDbService {
     private static _db: JsonDB;
