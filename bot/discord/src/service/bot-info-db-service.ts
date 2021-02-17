@@ -9,7 +9,7 @@ const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES: Map<string, Discord.MessageEmbed> = new Map([
     [
         '1.1.6', UtilityService.generateReleaseNotesMessageEmbed(
-            '1.1.5',
+            '1.1.6',
             [
                 'Update `!status` command',
                 'Create `StatusService`',
