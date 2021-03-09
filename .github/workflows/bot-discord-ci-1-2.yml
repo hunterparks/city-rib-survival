@@ -5,7 +5,7 @@ on:
   push:
     paths:
     - 'bot/discord/**'
-    - '.github/workflows/bot-discord-ci-1-1.yml'
+    - '.github/workflows/bot-discord-ci-*.yml'
 
 jobs:
   bot-discord:
@@ -22,7 +22,7 @@ jobs:
     
     - name: Set Environment Variables
       run: |
-        echo "BUILD_VER=1.1.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        echo "BUILD_VER=1.2.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
         echo "IMAGE=ghcr.io/$GITHUB_REPOSITORY" >> $GITHUB_ENV
         echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
