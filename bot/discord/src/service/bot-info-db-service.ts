@@ -8,6 +8,11 @@ import { UtilityService } from './utility-service';
 const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES_OBJECTS = [
     UtilityService.generateReleaseNotesMessageEmbed(
+        '1.1.10',
+        [ 'Moved release notes to bot channel 🤖' ],
+        [ ]
+    ),
+    UtilityService.generateReleaseNotesMessageEmbed(
         '1.1.9',
         [ 'Simplified release note processing 📝' ],
         [ ]

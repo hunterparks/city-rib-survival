@@ -43,7 +43,7 @@ export class DiscordService {
     }
 
     private ready(): void {
-        this.discord.channels.fetch(Config.CHANNEL.General)
+        this.discord.channels.fetch(Config.CHANNEL.RibCityBot)
             .then((channel: Discord.Channel) => {
                 BotInfoDbService.postReleaseNotes(channel as Discord.TextChannel);
             });
