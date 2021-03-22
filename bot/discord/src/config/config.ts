@@ -6,6 +6,7 @@ export class Config {
     public static readonly BOT_ENV = process.env.BOT_ENV;
     public static readonly BOT_NAME = process.env.BOT_NAME;
     public static readonly BOT_TOKEN = process.env.BOT_TOKEN;
+    public static readonly BRIAN_ID = process.env.BRIAN_ID as string;
     public static readonly CHANNEL = {
         General: process.env.CHANNEL_ID_GENERAL as string,
         RibCityBot: process.env.CHANNEL_ID_RIB_CITY_BOT as string,

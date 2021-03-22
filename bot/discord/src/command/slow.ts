@@ -1,5 +1,6 @@
 import * as Canvas from 'canvas';
 import { Command } from '../model/command';
+import { Config } from '../config/config';
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -26,7 +27,10 @@ export class Slow extends Command {
         if (slowee) {
             sloweeAvatarUrl = slowee.avatarURL(AVATAR_OPTIONS);
         }
-        Canvas.loadImage(path.join(__dirname, SLOW_IMAGE))
+        Canvas.loadImage(
+            (slowee && slowee.id === Config.BRIAN_ID)
+            ? path.join(__dirname, '../asset/image/beta_male.png')
+            : path.join(__dirname, SLOW_IMAGE))
             .then((image) => {
                 const slowWidth = image.width;
                 const slowHeight = image.height;
