@@ -8,6 +8,13 @@ import { UtilityService } from './utility-service';
 const DATABASE_NAME = 'bot-info';
 const RELEASE_NOTES_OBJECTS = [
     UtilityService.generateReleaseNotesMessageEmbed(
+        '1.2.2',
+        [
+            'Added \'!slow\' command'
+        ],
+        [ ]
+    ),
+    UtilityService.generateReleaseNotesMessageEmbed(
         '1.2.1',
         [ ],
         [ 'Github actions a bit more managable' ]
